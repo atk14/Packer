@@ -51,9 +51,9 @@ class TcPacker extends TcBase{
 		$packed4 = Packer::Pack($text,["enable_encryption" => true, "extra_salt" => "pass1"]);
 		$packed5 = Packer::Pack($text,["enable_encryption" => true, "extra_salt" => "pass2"]);
 
-		$this->assertEquals($packed,$packed2);
+		$this->assertNotEquals($packed,$packed2);
 		$this->assertNotEquals($packed2,$packed3);
-		$this->assertEquals($packed3,$packed4);
+		$this->assertNotEquals($packed3,$packed4);
 		$this->assertNotEquals($packed4,$packed5);
 	
 		$this->assertTrue(Packer::Unpack($packed,$val,["enable_encryption" => true]));
