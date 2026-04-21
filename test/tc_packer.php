@@ -110,6 +110,18 @@ class TcPacker extends TcBase{
 		$this->assertNull($out);
 	}
 
+	function test__CalculateSignature(){
+		$sig1 = Packer::_CalculateSignature("test1");
+		$sig2 = Packer::_CalculateSignature("test1");
+		$sig3 = Packer::_CalculateSignature("test2");
+
+		$this->assertEquals($sig1,$sig2);
+		$this->assertNotEquals($sig1,$sig3);
+
+		$this->assertEquals(16,strlen($sig1));
+		$this->assertEquals(16,strlen($sig3));
+	}
+
 	function _test_unpacking($packed,$var,$options,$message = ""){
 		//echo $packed."\n";
 		$this->assertEquals(true,Packer::Unpack($packed,$out,$options),$message);

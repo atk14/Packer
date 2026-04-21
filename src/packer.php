@@ -188,10 +188,12 @@ class Packer{
 	* @param string  &$str 			zabalena promenna
 	* @return string podpis
 	*/
-	static function _CalculateSignature(&$str,$extra_salt = ""){
+	static function _CalculateSignature($str,$extra_salt = ""){
 		$_constant_secret_salt = PACKER_CONSTANT_SECRET_SALT;
 		$_user_secret_salt = Packer::_GetSetSalt();
-		return substr(md5($str.$_constant_secret_salt.$_user_secret_salt.$extra_salt),0,16);
+		$signature = hash_hmac("sha256",$str,$_constant_secret_salt.$_user_secret_salt.$extra_salt);
+	  // $signature = md5($str.$_constant_secret_salt.$_user_secret_salt.$extra_salt);
+		return substr($signature,0,16);
 	}
 
 	/**
