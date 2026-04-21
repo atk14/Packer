@@ -104,10 +104,14 @@ class TcPacker extends TcBase{
 		$out = Packer::Decode($packed,$decoded);
 		$this->assertTrue($decoded);
 		$this->assertEquals($ary,$out);
+		//
+		$this->assertEquals($ary,Packer::Decode($packed));
 
 		$out = Packer::Decode("nonsence",$decoded);
 		$this->assertFalse($decoded);
 		$this->assertNull($out);
+		//
+		$this->assertNull(Packer::Decode("nonsence"));
 	}
 
 	function test__CalculateSignature(){
