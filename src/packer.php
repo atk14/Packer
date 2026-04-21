@@ -228,17 +228,14 @@ class Packer{
 	* @return array
 	*/
 	static function _GetEscape(){
-
-		//nevim presne, jake znaky muze obsahovat base64, snad to bude stacit
-		return array(
+		return [
 			"E" => "EE",
 			"/" => "ES",
 			"\\" => "EB",
 			"+" => "EP",
 			"=" => "EQ",
 			"." => "ED"
-		);
-		
+		];
 	}
 
 	/**
@@ -251,21 +248,9 @@ class Packer{
 	* @return string
 	*/
 	static function _EncodeDataString($data_string){
-		settype($data_string,"string");
-		
-		$out = array();
-		$escapes = Packer::_GetEscape();
+		$data_string = (string)$data_string;
 		$base64 = base64_encode($data_string);
-
-		for($i=0;$i<strlen($base64);$i++){
-			if(isset($escapes[$base64[$i]])){
-				$out[] = $escapes[$base64[$i]];
-				continue;
-			}
-			$out[] = $base64[$i];
-		}
-
-		return join("",$out);
+		return strtr($base64,self::_GetEscape());
 	}
 
 	/**
@@ -278,31 +263,12 @@ class Packer{
 	* @return string
 	*/
 	static function _DecodeDataString($encoded_data_string){
-		settype($encoded_data_string,"string");
-	
+		$encoded_data_string = (string)$encoded_data_string;
 		if(strlen($encoded_data_string)==0){
 			return "";
 		}
-	
-		$base64 = array();
-		$_escapes = Packer::_GetEscape();
-		$escapes = array();
-		foreach($_escapes as $_key => $_value){
-			$escapes[$_value] = $_key;
-		}
-
-		$out_ar = array();
-		for($i=0;$i<strlen($encoded_data_string);$i++){
-			if(isset($encoded_data_string[$i+1]) && isset($escapes[$encoded_data_string[$i].$encoded_data_string[$i+1]])){
-				$out_ar[] = $escapes[$encoded_data_string[$i].$encoded_data_string[$i+1]];
-				$i++;
-				continue;
-			}
-			$out_ar[] = $encoded_data_string[$i];
-		}
-		$out = join("",$out_ar);
-
-		return base64_decode($out);
+		$base64 = strtr($encoded_data_string,array_flip(self::_GetEscape()));
+		return base64_decode($base64);
 	}
 
 	static function _EncryptData($data,$extra_salt = ""){
