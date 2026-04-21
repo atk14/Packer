@@ -170,8 +170,10 @@ class Packer{
 	* Vrati null v pripade, ze $packed byla je porusena.
 	* Vrati ovsem null i v pripade, ze do $packed byl zabalen null.
 	*/
-	static function Decode($packed){
+	static function Decode($packed,&$decoded = false){
+		$decoded = false;
 		if(Packer::Unpack($packed,$out)){
+			$decoded = true;
 			return $out;
 		}
 	}

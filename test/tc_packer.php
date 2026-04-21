@@ -97,6 +97,19 @@ class TcPacker extends TcBase{
 		}
 	}
 
+	function test_Decode(){
+		$ary = ["a" => "b", "c" => "d"];
+		$packed = Packer::Pack($ary);
+
+		$out = Packer::Decode($packed,$decoded);
+		$this->assertTrue($decoded);
+		$this->assertEquals($ary,$out);
+
+		$out = Packer::Decode("nonsence",$decoded);
+		$this->assertFalse($decoded);
+		$this->assertNull($out);
+	}
+
 	function _test_unpacking($packed,$var,$optioons,$message = ""){
 		//echo $packed."\n";
 		$this->assertEquals(true,Packer::Unpack($packed,$out,$optioons),$message);
