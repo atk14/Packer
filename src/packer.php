@@ -187,11 +187,7 @@ class Packer{
 	* @return string podpis
 	*/
 	static function _CalculateSignature(&$str,$extra_salt = ""){
-		$_constant_secret_salt = "";
-		if(defined(PACKER_CONSTANT_SECRET_SALT)){
-			$_constant_secret_salt = PACKER_CONSTANT_SECRET_SALT;
-			settype($_constant_secret_salt,"string");
-		}
+		$_constant_secret_salt = PACKER_CONSTANT_SECRET_SALT;
 		$_user_secret_salt = Packer::_GetSetSalt();
 		return substr(md5($str.$_constant_secret_salt.$_user_secret_salt.$extra_salt),0,16);
 	}
