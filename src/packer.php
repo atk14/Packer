@@ -158,7 +158,7 @@ class Packer{
 				return false;
 			}
 		}
-		$out = $options["use_json_serialization"] ? json_decode($serialized,true) : unserialize($serialized,["allowed_classes" => false]);
+		$out = $options["use_json_serialization"] ? json_decode($serialized,true) : (version_compare(PHP_VERSION,"7.0.0")>=0 ? unserialize($serialized,["allowed_classes" => false]) : unserialize($serialized));
 		return true;
 	}
 
