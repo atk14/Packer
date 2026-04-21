@@ -1,5 +1,7 @@
 # Packer
 
+[![Tests](https://github.com/atk14/Packer/actions/workflows/tests.yml/badge.svg)](https://github.com/atk14/Packer/actions/workflows/tests.yml)
+
 Converts any PHP variable into a URL-safe string — and back. Supports HMAC signing, AES-256-CBC encryption, and gzip compression.
 
 ## Installation
