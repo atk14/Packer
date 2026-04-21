@@ -1,7 +1,7 @@
 {
         "name": "atk14/packer",
         "type": "library",
-        "description": "Converts an array into a string that can be safely used as a URL parameter. It uses encryption and compression.",
+        "description": "Converts any PHP variable into a URL-safe string with HMAC signing, optional AES-256-CBC encryption, and optional gzip compression.",
         "keywords": [],
         "homepage": "https://github.com/atk14/Packer",
         "license": ["MIT"],
