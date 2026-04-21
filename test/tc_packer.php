@@ -110,12 +110,12 @@ class TcPacker extends TcBase{
 		$this->assertNull($out);
 	}
 
-	function _test_unpacking($packed,$var,$optioons,$message = ""){
+	function _test_unpacking($packed,$var,$options,$message = ""){
 		//echo $packed."\n";
-		$this->assertEquals(true,Packer::Unpack($packed,$out,$optioons),$message);
+		$this->assertEquals(true,Packer::Unpack($packed,$out,$options),$message);
 		$this->assertEquals($var,$out,$message);
 
-		$this->assertEquals(false,Packer::Unpack($packed."x",$out,$optioons),$message);
+		$this->assertEquals(false,Packer::Unpack($packed."x",$out,$options),$message);
 		$this->assertEquals(null,$out,$message);
 	}
 }
