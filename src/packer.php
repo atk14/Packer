@@ -171,6 +171,9 @@ class Packer{
 		}
 		if($prefix==strtoupper($prefix)){
 			$serialized = Packer::_DecryptDataString($serialized,$options["extra_salt"]);
+			if($serialized === ""){
+				return false;
+			}
 			$prefix = strtolower($prefix);
 		}elseif($options["enable_encryption"]){
 			// encryption is enabled, but there isn't encrypted data
@@ -325,6 +328,10 @@ class Packer{
 		$secret = PACKER_CONSTANT_SECRET_SALT . Packer::_GetSetSalt() . $extra_salt;
 		$key = hash("sha256", $secret, true); // raw binary key
 		$iv = substr($encrypted_data_string, 0, 16);
-		return openssl_decrypt(substr($encrypted_data_string,16), "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
+		$out = openssl_decrypt(substr($encrypted_data_string,16), "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
+		if($out === false){
+			return "";
+		}
+		return $out;
 	}
 }
