@@ -276,6 +276,17 @@ class Packer{
 		return base64_decode($base64);
 	}
 
+	/**
+	 * Encrypts a string using AES-256-CBC with a random IV.
+	 * The encryption key is derived from the combined secret salts using SHA-256.
+	 * Returns the IV prepended to the ciphertext.
+	 *
+	 * @static
+	 * @access private
+	 * @param string $data_string  data to encrypt
+	 * @param string $extra_salt   additional secret (e.g. per-user token)
+	 * @return string              IV (16 bytes) + ciphertext
+	 */
 	static function _EncryptDataString($data_string,$extra_salt = ""){
 		$secret = PACKER_CONSTANT_SECRET_SALT . Packer::_GetSetSalt() . $extra_salt;
 		$key = hash("sha256", $secret, true); // raw binary key
@@ -283,6 +294,16 @@ class Packer{
 		return $iv.openssl_encrypt($data_string, "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
 	}
 
+	/**
+	 * Decrypts a string previously encrypted by _EncryptDataString().
+	 * Extracts the IV from the first 16 bytes and decrypts the remainder.
+	 *
+	 * @static
+	 * @access private
+	 * @param string $encrypted_data_string  IV (16 bytes) + ciphertext
+	 * @param string $extra_salt             additional secret (must match the one used for encryption)
+	 * @return string                        decrypted data
+	 */
 	static function _DecryptDataString($encrypted_data_string,$extra_salt = ""){
 		$secret = PACKER_CONSTANT_SECRET_SALT . Packer::_GetSetSalt() . $extra_salt;
 		$key = hash("sha256", $secret, true); // raw binary key
