@@ -55,7 +55,7 @@ Global defaults can also be set via constants:
 | `PACKER_ENABLE_ENCRYPTION` | `false` | Enable AES-256-CBC encryption |
 | `PACKER_USE_COMPRESS` | `false` | Enable gzip compression |
 | `PACKER_USE_JSON_SERIALIZATION` | `true` | Use JSON (`true`) or PHP `serialize()` (`false`) |
-| `PACKER_SIGNATURE_LENGTH` | `16` | Number of Base64URL characters used as the HMAC-SHA256 signature (1–43) |
+| `PACKER_SIGNATURE_LENGTH` | `16` | Number of Base64URL characters used as the HMAC-SHA256 signature (8–43) |
 
 ## Encryption
 
