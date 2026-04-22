@@ -76,7 +76,7 @@ class Packer{
 	* Zabali promennou do ascii retezce mimo jine bezpecne pouzitelneho jako parametr v URL.
 	*
 	* $p = Packer::Pack("hello!");
-	* $p = Packer::Packer(array("a","b","c"));
+	* $p = Packer::Pack(array("a","b","c"));
 	*/
 	static function Pack($variable,$options = array()){
 		$options = array_merge(array(
@@ -86,7 +86,14 @@ class Packer{
 			"use_json_serialization" => PACKER_USE_JSON_SERIALIZATION,
 		),$options);
 
-		$out = $options["use_json_serialization"] ? json_encode($variable) : serialize($variable);
+		if($options["use_json_serialization"]){
+			$out = json_encode($variable);
+			if($out===false){
+				throw new InvalidArgumentException("Packer::Pack(): variable cannot be JSON-encoded: ".json_last_error_msg());
+			}
+		}else{
+			$out = serialize($variable);
+		}
 
 		if($options["use_compress"]){
 			$out = gzcompress($out,5);
@@ -175,6 +182,7 @@ class Packer{
 			$decoded = true;
 			return $out;
 		}
+		return null;
 	}
 
 
