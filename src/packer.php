@@ -188,6 +188,9 @@ class Packer{
 
 		if($options["use_json_serialization"]){
 			$out = json_decode($serialized,true);
+			if($out === null && $serialized !== 'null' && json_last_error() !== JSON_ERROR_NONE){                                                                                                                                                                                                                                      
+				return false;                                                                                                                                                                                                                                                                                                            
+			}   
 		}else{
 			$out = version_compare(PHP_VERSION,"7.0.0")>=0 ? unserialize($serialized,["allowed_classes" => false]) : unserialize($serialized);
 		}
