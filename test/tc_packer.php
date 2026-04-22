@@ -156,8 +156,8 @@ class TcPacker extends TcBase{
 		$this->assertEquals($sig1,$sig2);
 		$this->assertNotEquals($sig1,$sig3);
 
-		$this->assertEquals(16,strlen($sig1));
-		$this->assertEquals(16,strlen($sig3));
+		$this->assertEquals(PACKER_SIGNATURE_LENGTH,strlen($sig1));
+		$this->assertEquals(PACKER_SIGNATURE_LENGTH,strlen($sig3));
 	}
 
 	function test__Base64UrlEncode(){
