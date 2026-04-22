@@ -96,12 +96,12 @@ class Packer{
 	 * @throws InvalidArgumentException when the variable cannot be JSON-encoded (only in JSON serialization mode)
 	 */
 	static function Pack($variable,$options = array()){
-		$options = array_merge(array(
+		$options += array(
 			"use_compress" => PACKER_USE_COMPRESS,
 			"enable_encryption" => PACKER_ENABLE_ENCRYPTION,
 			"extra_salt" => "", // for signing and encryption
 			"use_json_serialization" => PACKER_USE_JSON_SERIALIZATION,
-		),$options);
+		);
 
 		if($options["use_json_serialization"]){
 			$out = json_encode($variable);
