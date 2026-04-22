@@ -77,6 +77,8 @@ class Packer{
 	 *
 	 * $p = Packer::Pack("hello!");
 	 * $p = Packer::Pack(array("a","b","c"));
+	 *
+	 * @throws InvalidArgumentException when the variable cannot be JSON-encoded (only in JSON serialization mode)
 	 */
 	static function Pack($variable,$options = array()){
 		$options = array_merge(array(
