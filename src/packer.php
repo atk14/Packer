@@ -137,9 +137,9 @@ class Packer{
 	 *
 	 * <code>
 	 * $packed_value = Packer::Pack(array("hello" => "world"));
-	 * if(Packer::Unpack($packed_value,$outpout_value)){
+	 * if(Packer::Unpack($packed_value,$output_value)){
 	 *		// ok
-	 *		print_r($outpout_value);
+	 *		print_r($output_value);
 	 *	}
 	 * </code>
 	 */
