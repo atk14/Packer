@@ -73,11 +73,11 @@ class Packer{
 	}
 
 	/**
-		* Packs a variable into a URL-safe ASCII string.
-		*
-		* $p = Packer::Pack("hello!");
-		* $p = Packer::Pack(array("a","b","c"));
-		*/
+	 * Packs a variable into a URL-safe ASCII string.
+	 *
+	 * $p = Packer::Pack("hello!");
+	 * $p = Packer::Pack(array("a","b","c"));
+	 */
 	static function Pack($variable,$options = array()){
 		$options = array_merge(array(
 			"use_compress" => PACKER_USE_COMPRESS,
@@ -116,16 +116,16 @@ class Packer{
 	}
 
 	/**
-	  * Unpack previously packed data.
-	  *
-	  * <code>
-	  * $packed_value = Packer::Pack(array("hello" => "world"));
-	  * if(Packer::Unpack($packed_value,$outpout_value)){
-	  *		// ok
-	  *		print_r($outpout_value);
-	  *	}
-	  * </code>
-	  */
+	 * Unpack previously packed data.
+	 *
+	 * <code>
+	 * $packed_value = Packer::Pack(array("hello" => "world"));
+	 * if(Packer::Unpack($packed_value,$outpout_value)){
+	 *		// ok
+	 *		print_r($outpout_value);
+	 *	}
+	 * </code>
+	 */
 	static function Unpack($packed,&$out,$options = array()){
 		$options += array(
 			"enable_encryption" => PACKER_ENABLE_ENCRYPTION,
@@ -269,7 +269,7 @@ class Packer{
 	 */
 	static function _Base64UrlDecode($encoded_data_string){
 		$encoded_data_string = (string)$encoded_data_string;
-		if(strlen($encoded_data_string)==0){
+		if(strlen($encoded_data_string) === 0){
 			return "";
 		}
 		$base64 = strtr($encoded_data_string,array_flip(self::_GetBase64Replaces()));
