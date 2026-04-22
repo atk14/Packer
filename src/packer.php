@@ -259,6 +259,7 @@ class Packer{
 	static function _EncodeDataString($data_string){
 		$data_string = (string)$data_string;
 		$base64 = base64_encode($data_string);
+		
 		return strtr($base64,self::_GetBase64Replaces());
 	}
 
@@ -279,17 +280,17 @@ class Packer{
 		return base64_decode($base64);
 	}
 
-	static function _EncryptData($data_str,$extra_salt = ""){
+	static function _EncryptData($data_string,$extra_salt = ""){
 		$secret = PACKER_CONSTANT_SECRET_SALT . Packer::_GetSetSalt() . $extra_salt;
 		$key = hash("sha256", $secret, true); // raw binary key
 		$iv = function_exists("random_bytes") ? random_bytes(16) : openssl_random_pseudo_bytes(16);
-		return $iv.openssl_encrypt($data_str, "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
+		return $iv.openssl_encrypt($data_string, "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
 	}
 
-	static function _DecryptData($data_str,$extra_salt = ""){
+	static function _DecryptData($encrypted_data_string,$extra_salt = ""){
 		$secret = PACKER_CONSTANT_SECRET_SALT . Packer::_GetSetSalt() . $extra_salt;
 		$key = hash("sha256", $secret, true); // raw binary key
-		$iv = substr($data_str, 0, 16);
-		return openssl_decrypt(substr($data_str,16), "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
+		$iv = substr($encrypted_data_string, 0, 16);
+		return openssl_decrypt(substr($encrypted_data_string,16), "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
 	}
 }
