@@ -4,7 +4,7 @@ define("PACKER_USE_COMPRESS",true);
 define("PACKER_ENABLE_ENCRYPTION",true);
 
 if(preg_match('/tc_signature_(\d+)/',$_TEST["FILENAME"],$matches)){
-	// tc_signature_24.php -> PACKER_ENABLE_ENCRYPTION defined to 24
+	// tc_signature_24.php -> PACKER_SIGNATURE_LENGTH defined to 24
 	define("PACKER_SIGNATURE_LENGTH",(int)$matches[1]);
 }
 
