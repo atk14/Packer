@@ -96,10 +96,10 @@ class TcPacker extends TcBase{
 			$this->assertEquals($value,$value_selialize);
 		}
 
-		$invalid_urf8_char = "\xFF";
+		$invalid_utf8_char = "\xFF";
 		$exception_thrown = false;
 		try {
-			Packer::Pack($invalid_urf8_char,["use_json_serialization" => true]);
+			Packer::Pack($invalid_utf8_char,["use_json_serialization" => true]);
 		}catch(Exception $e){
 			$exception_thrown = true;
 		}
