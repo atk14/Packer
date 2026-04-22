@@ -102,13 +102,13 @@ class Packer{
 			$prefix = "p";
 		}
 		if($options["enable_encryption"]){
-			$out = Packer::_EncryptData($out,$options["extra_salt"]);
+			$out = Packer::_EncryptDataString($out,$options["extra_salt"]);
 			$prefix = strtoupper($prefix);
 		}
 
 		$out = $prefix.$out;
 
-		$out = Packer::_EncodeDataString($out);
+		$out = Packer::_Base64UrlEncode($out);
 		$sign = Packer::_CalculateSignature($out,$options["extra_salt"]);
 		$out = $sign.$out;
 
@@ -143,7 +143,7 @@ class Packer{
 		if($expected_sign!==$sign){
 			return false;
 		}
-		$serialized = Packer::_DecodeDataString($data);
+		$serialized = Packer::_Base64UrlDecode($data);
 		if(strlen($serialized)<=1){
 			return false;
 		}
@@ -153,7 +153,7 @@ class Packer{
 			return false;
 		}
 		if($prefix==strtoupper($prefix)){
-			$serialized = Packer::_DecryptData($serialized,$options["extra_salt"]);
+			$serialized = Packer::_DecryptDataString($serialized,$options["extra_salt"]);
 			$prefix = strtolower($prefix);
 		}elseif($options["enable_encryption"]){
 			// encryption is enabled, but there isn't encrypted data
@@ -203,7 +203,7 @@ class Packer{
 		$_constant_secret_salt = PACKER_CONSTANT_SECRET_SALT;
 		$_user_secret_salt = Packer::_GetSetSalt();
 		$signature = hash_hmac("sha256",$str,$_constant_secret_salt.$_user_secret_salt.$extra_salt,true); // raw binary
-		$signature = Packer::_EncodeDataString($signature);
+		$signature = Packer::_Base64UrlEncode($signature);
 		return substr($signature,0,16);
 	}
 
@@ -231,9 +231,7 @@ class Packer{
 	}
 
 	/**
-	 * Returns the escape map for URL-unsafe base64 characters.
-	 * Some characters produced by base64 encoding are not safe for use in URLs
-	 * and must be escaped. The escape character is "E".
+	 * Returns a map for replacing Base64 characters that are not URL-safe.
 	 *
 	 * @static
 	 * @access private
@@ -241,37 +239,35 @@ class Packer{
 	 */
 	static function _GetBase64Replaces(){
 		return [
-			"E" => "EE",
-			"/" => "ES",
-			"+" => "EP",
-			"=" => "EQ",
+			"+" => "-",
+			"/" => "_",
 		];
 	}
 
 	/**
-	 * Base64-encodes the input string and escapes URL-unsafe characters.
+	 * Base64URL-encodes the input string.
 	 *
 	 * @static
 	 * @access private
 	 * @param string $data_string
 	 * @return string
 	 */
-	static function _EncodeDataString($data_string){
+	static function _Base64UrlEncode($data_string){
 		$data_string = (string)$data_string;
-		$base64 = base64_encode($data_string);
-		
-		return strtr($base64,self::_GetBase64Replaces());
+		$out = base64_encode($data_string);
+		$out = rtrim($out,"=");
+		return strtr($out,self::_GetBase64Replaces());
 	}
 
 	/**
-	 * Unescapes the input string and base64-decodes it.
+	 * Unescapes the input string and Base64URL-decodes it.
 	 *
 	 * @static
 	 * @access private
 	 * @param string $encoded_data_string
 	 * @return string
 	 */
-	static function _DecodeDataString($encoded_data_string){
+	static function _Base64UrlDecode($encoded_data_string){
 		$encoded_data_string = (string)$encoded_data_string;
 		if(strlen($encoded_data_string)==0){
 			return "";
@@ -280,14 +276,14 @@ class Packer{
 		return base64_decode($base64);
 	}
 
-	static function _EncryptData($data_string,$extra_salt = ""){
+	static function _EncryptDataString($data_string,$extra_salt = ""){
 		$secret = PACKER_CONSTANT_SECRET_SALT . Packer::_GetSetSalt() . $extra_salt;
 		$key = hash("sha256", $secret, true); // raw binary key
 		$iv = function_exists("random_bytes") ? random_bytes(16) : openssl_random_pseudo_bytes(16);
 		return $iv.openssl_encrypt($data_string, "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
 	}
 
-	static function _DecryptData($encrypted_data_string,$extra_salt = ""){
+	static function _DecryptDataString($encrypted_data_string,$extra_salt = ""){
 		$secret = PACKER_CONSTANT_SECRET_SALT . Packer::_GetSetSalt() . $extra_salt;
 		$key = hash("sha256", $secret, true); // raw binary key
 		$iv = substr($encrypted_data_string, 0, 16);
