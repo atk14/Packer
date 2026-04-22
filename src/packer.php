@@ -15,10 +15,16 @@ if(!defined("PACKER_USE_COMPRESS")){
 }
 
 if(!defined("PACKER_ENABLE_ENCRYPTION")){
+	/**
+	 * Whether to encrypt packed data with AES-256-CBC by default.
+	 */
 	define("PACKER_ENABLE_ENCRYPTION",false);
 }
 
 if(!defined("PACKER_USE_JSON_SERIALIZATION")){
+	/**
+	 * Whether to serialize data as JSON (true) or using PHP native serialize() (false).
+	 */
 	define("PACKER_USE_JSON_SERIALIZATION",true);
 }
 
