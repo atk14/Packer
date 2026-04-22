@@ -22,6 +22,15 @@ if(!defined("PACKER_USE_JSON_SERIALIZATION")){
 	define("PACKER_USE_JSON_SERIALIZATION",true);
 }
 
+if(!defined("PACKER_SIGNATURE_LENGTH")){
+	/**
+	 * Number of Base64URL characters used as the HMAC-SHA256 signature prefix.
+	 * Each character carries ~6 bits of entropy; 16 characters = ~96 bits.
+	 * Must be between 1 and 43 (the full SHA-256 Base64URL-encoded length).
+	 */
+	define("PACKER_SIGNATURE_LENGTH",16);
+}
+
 /**
  * Packs any PHP variable into a URL-safe ASCII string and unpacks it back.
  * Suitable for use in hidden form fields or as a URL parameter.
@@ -136,11 +145,11 @@ class Packer{
 		);
 		settype($packed,"string");
 		$out = null;
-		if(strlen($packed)<=16){
+		if(strlen($packed)<=PACKER_SIGNATURE_LENGTH){
 			return false;
 		}
-		$sign = substr($packed,0,16);
-		$data = substr($packed,16);
+		$sign = substr($packed,0,PACKER_SIGNATURE_LENGTH);
+		$data = substr($packed,PACKER_SIGNATURE_LENGTH);
 		$expected_sign = Packer::_CalculateSignature($data,$options["extra_salt"]);
 		if($expected_sign!==$sign){
 			return false;
@@ -206,7 +215,7 @@ class Packer{
 		$_user_secret_salt = Packer::_GetSetSalt();
 		$signature = hash_hmac("sha256",$str,$_constant_secret_salt.$_user_secret_salt.$extra_salt,true); // raw binary
 		$signature = Packer::_Base64UrlEncode($signature);
-		return substr($signature,0,16);
+		return substr($signature,0,PACKER_SIGNATURE_LENGTH);
 	}
 
 	/**
