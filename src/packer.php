@@ -140,7 +140,7 @@ class Packer{
 		$sign = substr($packed,0,16);
 		$data = substr($packed,16);
 		$expected_sign = Packer::_CalculateSignature($data,$options["extra_salt"]);
-		if($expected_sign!=$sign){
+		if($expected_sign!==$sign){
 			return false;
 		}
 		$serialized = Packer::_DecodeDataString($data);
@@ -197,7 +197,8 @@ class Packer{
 	static function _CalculateSignature($str,$extra_salt = ""){
 		$_constant_secret_salt = PACKER_CONSTANT_SECRET_SALT;
 		$_user_secret_salt = Packer::_GetSetSalt();
-		$signature = hash_hmac("sha256",$str,$_constant_secret_salt.$_user_secret_salt.$extra_salt);
+		$signature = hash_hmac("sha256",$str,$_constant_secret_salt.$_user_secret_salt.$extra_salt,true); // raw binary
+		$signature = Packer::_EncodeDataString($signature);
 		return substr($signature,0,16);
 	}
 
