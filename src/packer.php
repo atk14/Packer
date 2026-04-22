@@ -32,9 +32,13 @@ if(!defined("PACKER_SIGNATURE_LENGTH")){
 	/**
 	 * Number of Base64URL characters used as the HMAC-SHA256 signature prefix.
 	 * Each character carries ~6 bits of entropy; 16 characters = ~96 bits.
-	 * Must be between 1 and 43 (the full SHA-256 Base64URL-encoded length).
+	 * Must be between 8 and 43 (the full SHA-256 Base64URL-encoded length).
 	 */
 	define("PACKER_SIGNATURE_LENGTH",16);
+}
+
+if(PACKER_SIGNATURE_LENGTH < 8 || PACKER_SIGNATURE_LENGTH > 43){
+	throw new \LogicException("PACKER_SIGNATURE_LENGTH must be between 8 and 43, ".PACKER_SIGNATURE_LENGTH." given.");
 }
 
 /**
