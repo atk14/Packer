@@ -124,6 +124,30 @@ class TcPacker extends TcBase{
 		$this->assertNull(Packer::Decode("nonsence"));
 	}
 
+	function test_SetSalt(){
+		$value = [true];
+
+		Packer::SetSalt("");
+		$packed_no_salt = Packer::Pack($value);
+
+		Packer::SetSalt("daisy");
+		$packed_salted = Packer::Pack($value);
+
+		// Unpacking
+
+		Packer::SetSalt("");
+		$this->assertTrue(Packer::Unpack($packed_no_salt,$out));
+		$this->assertFalse(Packer::Unpack($packed_salted,$out));
+
+		Packer::SetSalt("daisy");
+		$this->assertFalse(Packer::Unpack($packed_no_salt,$out));
+		$this->assertTrue(Packer::Unpack($packed_salted,$out));
+
+		Packer::SetSalt("bad_try");
+		$this->assertFalse(Packer::Unpack($packed_no_salt,$out));
+		$this->assertFalse(Packer::Unpack($packed_salted,$out));
+	}
+
 	function test__CalculateSignature(){
 		$sig1 = Packer::_CalculateSignature("test1");
 		$sig2 = Packer::_CalculateSignature("test1");

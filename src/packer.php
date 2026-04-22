@@ -279,14 +279,14 @@ class Packer{
 	}
 
 	static function _EncryptData($data,$extra_salt = ""){
-		$secret = PACKER_CONSTANT_SECRET_SALT . $extra_salt;
+		$secret = PACKER_CONSTANT_SECRET_SALT . Packer::_GetSetSalt() . $extra_salt;
 		$key = hash('sha256', $secret, true); // raw binary klíč
 		$iv = function_exists('random_bytes') ? random_bytes(16) : openssl_random_pseudo_bytes(16);
 		return $iv.openssl_encrypt($data,"AES-256-CBC",$key,true,$iv);
 	}
 
 	static function _DecryptData($data,$extra_salt = ""){
-		$secret = PACKER_CONSTANT_SECRET_SALT . $extra_salt;
+		$secret = PACKER_CONSTANT_SECRET_SALT . Packer::_GetSetSalt() . $extra_salt;
 		$key = hash('sha256', $secret, true); // raw binary klíč
 		$iv = substr($data, 0, 16);
 		return openssl_decrypt(substr($data,16),"AES-256-CBC",$key,true,$iv);
