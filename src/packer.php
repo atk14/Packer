@@ -157,7 +157,7 @@ class Packer{
 		$sign = substr($packed,0,PACKER_SIGNATURE_LENGTH);
 		$data = substr($packed,PACKER_SIGNATURE_LENGTH);
 		$expected_sign = Packer::_CalculateSignature($data,$options["extra_salt"]);
-		if($expected_sign!==$sign){
+		if(!hash_equals($expected_sign,$sign)){
 			return false;
 		}
 		$serialized = Packer::_Base64UrlDecode($data);
