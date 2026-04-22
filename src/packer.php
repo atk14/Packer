@@ -166,7 +166,6 @@ class Packer{
 	* Rozbali promennou a vrati rovnou jeji hodnotu.
 	* Tedy oproti Unpack() nevraci bool/true.
 	*
-	*
 	* Vrati null v pripade, ze $packed byla je porusena.
 	* Vrati ovsem null i v pripade, ze do $packed byl zabalen null.
 	*/
@@ -181,7 +180,6 @@ class Packer{
 
 	/**
 	* Pro dany ascii retezec urci podpis.
-	* Vraci polovinu md5 retezec _+
 	*
 	* @access private
 	* @static
@@ -274,14 +272,14 @@ class Packer{
 
 	static function _EncryptData($data,$extra_salt = ""){
 		$secret = PACKER_CONSTANT_SECRET_SALT . $extra_salt;
-		$key = hash('sha256', $secret);
+		$key = hash('sha256', $secret, true); // raw binary klíč
 		$iv = function_exists('random_bytes') ? random_bytes(16) : openssl_random_pseudo_bytes(16);
 		return $iv.openssl_encrypt($data,"AES-256-CBC",$key,true,$iv);
 	}
 
 	static function _DecryptData($data,$extra_salt = ""){
 		$secret = PACKER_CONSTANT_SECRET_SALT . $extra_salt;
-		$key = hash('sha256', $secret);
+		$key = hash('sha256', $secret, true); // raw binary klíč
 		$iv = substr($data, 0, 16);
 		return openssl_decrypt(substr($data,16),"AES-256-CBC",$key,true,$iv);
 	}
