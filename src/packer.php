@@ -71,6 +71,14 @@ if(PACKER_SIGNATURE_LENGTH < 8 || PACKER_SIGNATURE_LENGTH > 43){
  */
 class Packer{
 
+	/**
+	 * A map for replacing Base64 characters that are not URL-safe.
+	 */
+	protected static $BASE64_REPLACES = [
+		"+" => "-",
+		"/" => "_",
+	];
+
 	protected function __construct(){
 	}
 
@@ -258,20 +266,6 @@ class Packer{
 	}
 
 	/**
-	 * Returns a map for replacing Base64 characters that are not URL-safe.
-	 *
-	 * @static
-	 * @access private
-	 * @return array
-	 */
-	static function _GetBase64Replaces(){
-		return [
-			"+" => "-",
-			"/" => "_",
-		];
-	}
-
-	/**
 	 * Base64URL-encodes the input string.
 	 *
 	 * @static
@@ -283,7 +277,7 @@ class Packer{
 		$data_string = (string)$data_string;
 		$out = base64_encode($data_string);
 		$out = rtrim($out,"=");
-		return strtr($out,self::_GetBase64Replaces());
+		return strtr($out,self::$BASE64_REPLACES);
 	}
 
 	/**
@@ -299,7 +293,7 @@ class Packer{
 		if(strlen($encoded_data_string) === 0){
 			return "";
 		}
-		$base64 = strtr($encoded_data_string,array_flip(self::_GetBase64Replaces()));
+		$base64 = strtr($encoded_data_string,array_flip(self::$BASE64_REPLACES));
 		return base64_decode($base64);
 	}
 
