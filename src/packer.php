@@ -126,9 +126,9 @@ class Packer{
 
 		if($options["use_compress"]){
 			$out = gzcompress($out,5);
-			$prefix = $options["use_json_serialization"] ? "j" : "g";
+			$prefix = "g";
 		}else{
-			$prefix = $options["use_json_serialization"] ? "i" : "p";
+			$prefix = "p";
 		}
 		if($options["enable_encryption"]){
 			$out = Packer::_EncryptDataString($out,$options["extra_salt"]);
@@ -156,11 +156,11 @@ class Packer{
 	 * </code>
 	 */
 	static function Unpack($packed,&$out,$options = array()){
-		$options += [
+		$options += array(
+			"enable_encryption" => PACKER_ENABLE_ENCRYPTION,
 			"extra_salt" => "", // for signing and encryption
-			// default values of other options depend on the detected prefix
-		];
-
+			"use_json_serialization" => PACKER_USE_JSON_SERIALIZATION,
+		);
 		$packed = (string)$packed;
 		$out = null;
 		if(strlen($packed)<=PACKER_SIGNATURE_LENGTH){
@@ -178,25 +178,20 @@ class Packer{
 		}
 		$prefix = $serialized[0];
 		$serialized = substr($serialized,1);
-		if(!in_array(strtoupper($prefix),array("P","G","I","J"))){
+		if(!in_array($prefix,array("p","g","P","G"))){
 			return false;
 		}
-
-		$options += [
-			"use_compress" => in_array($prefix,["j","g","J","G"]),
-			"enable_encryption" => $prefix==strtoupper($prefix),
-			"use_json_serialization" => in_array($prefix,["i","j","I","J"]),
-		];
-
-		if($options["enable_encryption"]){
+		if($prefix==strtoupper($prefix)){
 			$serialized = Packer::_DecryptDataString($serialized,$options["extra_salt"]);
 			if($serialized === ""){
 				return false;
 			}
 			$prefix = strtolower($prefix);
+		}elseif($options["enable_encryption"]){
+			// encryption is enabled, but there isn't encrypted data
+			return false;
 		}
-
-		if($options["use_compress"]){
+		if($prefix=="g"){
 			$serialized = gzuncompress($serialized);
 			if($serialized === false){
 				return false;
