@@ -93,7 +93,7 @@ class Packer{
 	 * @return string  previous salt
 	 */
 	static function SetSalt($salt){
-		settype($salt,"string");
+		$salt = (string)$salt;
 		$current_salt = Packer::_GetSetSalt(true,$salt);
 
 		return $current_salt;
@@ -161,7 +161,7 @@ class Packer{
 			"extra_salt" => "", // for signing and encryption
 			"use_json_serialization" => PACKER_USE_JSON_SERIALIZATION,
 		);
-		settype($packed,"string");
+		$packed = (string)$packed;
 		$out = null;
 		if(strlen($packed)<=PACKER_SIGNATURE_LENGTH){
 			return false;
