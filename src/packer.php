@@ -320,14 +320,14 @@ class Packer{
 	 *
 	 * @static
 	 * @access private
-	 * @param string $signed_encrypted_data_string  IV (16 bytes) + ciphertext
-	 * @param string $extra_salt                    additional secret (must match the one used for encryption)
-	 * @return string                               decrypted data
+	 * @param string $encrypted_data_string  IV (16 bytes) + ciphertext
+	 * @param string $extra_salt             additional secret (must match the one used for encryption)
+	 * @return string                        decrypted data
 	 */
-	static function _DecryptDataString($signed_encrypted_data_string,$extra_salt = ""){
+	static function _DecryptDataString($encrypted_data_string,$extra_salt = ""){
 		$key = self::_BuildEncryptionKey($extra_salt);
-		$iv = substr($signed_encrypted_data_string, 0, 16);
-		$encrypted_data_string = substr($signed_encrypted_data_string,16);
+		$iv = substr($encrypted_data_string, 0, 16);
+		$encrypted_data_string = substr($encrypted_data_string,16);
 		$out = openssl_decrypt($encrypted_data_string, "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
 		if($out === false){
 			return "";
