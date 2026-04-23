@@ -237,7 +237,7 @@ class Packer{
 	static function _CalculateSignature($str,$extra_salt = ""){
 		$_constant_secret_salt = PACKER_CONSTANT_SECRET_SALT;
 		$_user_secret_salt = Packer::_GetSetSalt();
-		$signature = hash_hmac("sha256",$str,implode("\x00",[$_constant_secret_salt,$_user_secret_salt,$extra_salt]),true); // raw binary
+		$signature = hash_hmac("sha256",$str,implode("\x00",["sign",$_constant_secret_salt,$_user_secret_salt,$extra_salt]),true); // raw binary
 		$signature = Packer::_Base64UrlEncode($signature);
 		return substr($signature,0,PACKER_SIGNATURE_LENGTH);
 	}
@@ -309,7 +309,7 @@ class Packer{
 	 * @return string              IV (16 bytes) + ciphertext
 	 */
 	static function _EncryptDataString($data_string,$extra_salt = ""){
-		$secret = implode("\x00",[PACKER_CONSTANT_SECRET_SALT,Packer::_GetSetSalt(),$extra_salt]);
+		$secret = implode("\x00",["encrypt",PACKER_CONSTANT_SECRET_SALT,Packer::_GetSetSalt(),$extra_salt]);
 		$key = hash("sha256", $secret, true); // raw binary key
 		$iv = function_exists("random_bytes") ? random_bytes(16) : openssl_random_pseudo_bytes(16);
 		return $iv.openssl_encrypt($data_string, "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
@@ -326,7 +326,7 @@ class Packer{
 	 * @return string                        decrypted data
 	 */
 	static function _DecryptDataString($encrypted_data_string,$extra_salt = ""){
-		$secret = implode("\x00",[PACKER_CONSTANT_SECRET_SALT,Packer::_GetSetSalt(),$extra_salt]);
+		$secret = implode("\x00",["encrypt",PACKER_CONSTANT_SECRET_SALT,Packer::_GetSetSalt(),$extra_salt]);
 		$key = hash("sha256", $secret, true); // raw binary key
 		$iv = substr($encrypted_data_string, 0, 16);
 		$out = openssl_decrypt(substr($encrypted_data_string,16), "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv);
