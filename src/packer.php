@@ -216,9 +216,9 @@ class Packer{
 	 * Returns null if $packed is tampered or invalid.
 	 * Also returns null if the packed value was originally null.
 	 */
-	static function Decode($packed,&$decoded = false){
+	static function Decode($packed,&$decoded = false,$options = []){
 		$decoded = false;
-		if(Packer::Unpack($packed,$out)){
+		if(Packer::Unpack($packed,$out,$options)){
 			$decoded = true;
 			return $out;
 		}
